@@ -45,6 +45,18 @@ public class BaseNPC : GameEntity
 
     public Transform target;
 
+    public event Action<float> OnHealthChanged;
+    private void onHealthChanged(float health)
+    {
+        base.onHealthChanged(health);
+    }
+
+    public BaseNPC()
+    {
+        OnHealthChanged += onHealthChanged;
+    }
+
+
 #region State Management
     public void setState(NPCState state)
     {
@@ -67,19 +79,12 @@ public class BaseNPC : GameEntity
     }
     #endregion
 
-    public event Action<float> OnHealthChanged;
-
     public override float TakeDamage(float damage)
     {
         Health -= damage;
         if (Health < 0) Health = 0;
         this.OnHealthChanged?.Invoke(Health);
-        if (Health <= 0)
-        {
-            onDeath();
-            bool foo = this.IsAlive;
-            Debug.Log($"{this.name} is dead: {foo}");
-        }
+        if (Health <= 0) onDeath();
         return Health;
     }
 

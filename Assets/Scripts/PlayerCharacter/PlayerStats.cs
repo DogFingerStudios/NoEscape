@@ -3,28 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerStats : GameEntity, IHasHealth
+public class PlayerStats : GameEntity
 {
-    [SerializeField]
-    float _health = 100f;
-    public float Health 
-    {
-        get => _health;
-        set => _health = value;
-    }
-
-    [SerializeField]
-    float _maxHealth = 100f;
-    public float MaxHealth 
-    {
-        get => _maxHealth;
-        set => _maxHealth = value;
-    }
-
     private Dictionary<string, Vector3> _labeledPoints = new Dictionary<string, Vector3>();
     public Dictionary<string, Vector3> LabeledPoints { get => _labeledPoints; set => _labeledPoints = value; }
 
     public event Action<float> OnHealthChanged;
+    private void onHealthChanged(float health)
+    {
+        base.onHealthChanged(health);
+    }
+
+    PlayerStats()
+    {
+        OnHealthChanged += onHealthChanged;
+    }
 
     public override float TakeDamage(float amount)
     {

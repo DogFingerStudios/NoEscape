@@ -22,6 +22,11 @@ public abstract class GameEntity : MonoBehaviour
     public abstract float Heal(float amount);
     public virtual bool IsAlive { get => Health > 0; }
 
-    event Action<float> OnHealthChanged;
+    public event Action<float> OnHealthChanged;
+    protected void onHealthChanged(float health)
+    {
+        OnHealthChanged?.Invoke(health);
+    }
+
 }
 

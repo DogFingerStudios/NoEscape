@@ -14,7 +14,7 @@ public class HealthBar : MonoBehaviour
 
     private void Awake()
     {
-        if (!_targetObject.TryGetComponent<IHasHealth>(out var iHasHealth))
+        if (!_targetObject.TryGetComponent<GameEntity>(out var iHasHealth))
         {
             throw new System.Exception("Target object does not implement IHasHealth interface.");
         }
