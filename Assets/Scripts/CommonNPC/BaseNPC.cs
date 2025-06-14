@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseNPC : MonoBehaviour, IHasHealth
+public class BaseNPC : GameEntity
 {
     [SerializeField]
     [Tooltip("The AudioSource component for playing NPC sounds")]
@@ -88,7 +88,7 @@ public class BaseNPC : MonoBehaviour, IHasHealth
 
     public event Action<float> OnHealthChanged;
 
-    public float TakeDamage(float damage)
+    public override float TakeDamage(float damage)
     {
         Health -= damage;
         if (Health < 0) Health = 0;
@@ -99,11 +99,14 @@ public class BaseNPC : MonoBehaviour, IHasHealth
             bool foo = this.IsAlive;
             Debug.Log($"{this.name} is dead: {foo}");
         }
-        // else
-        // {
-        //     // Play hurt animation or sound
-        //     _animator.SetTrigger("Hurt");
-        // }
+        return Health;
+    }
+
+    public override float Heal(float amount)
+    {
+        Health += amount;
+        if (Health > MaxHealth) Health = MaxHealth;
+        this.OnHealthChanged?.Invoke(Health);
         return Health;
     }
 
@@ -111,14 +114,6 @@ public class BaseNPC : MonoBehaviour, IHasHealth
     {
         Debug.Log($"{this.name} has died.");
         this.setState(new NPCDeathState(this));
-    }
-
-    float IHasHealth.Heal(float amount)
-    {
-        Health += amount;
-        if (Health > MaxHealth) Health = MaxHealth;
-        this.OnHealthChanged?.Invoke(Health);
-        return Health;
     }
 
     protected NPCStateMachine stateMachine = new NPCStateMachine();

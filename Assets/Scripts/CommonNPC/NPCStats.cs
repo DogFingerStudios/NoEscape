@@ -1,3 +1,4 @@
+using UnityEngine;
 using System;
 
 public interface IHasHealth 
@@ -11,3 +12,16 @@ public interface IHasHealth
 
     event Action<float> OnHealthChanged;
 }
+
+public abstract class GameEntity : MonoBehaviour
+{
+    float Health { get; set; }
+    float MaxHealth { get; set; }
+
+    public abstract float TakeDamage(float amount);
+    public abstract float Heal(float amount);
+    public virtual bool IsAlive { get => Health > 0; }
+
+    event Action<float> OnHealthChanged;
+}
+
