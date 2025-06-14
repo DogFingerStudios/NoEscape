@@ -68,13 +68,13 @@ public class EnemyIdleState : NPCState
             var target = doScan();
             if (target != null)
             {
-                var targetHealth = target.GetComponent<IHasHealth>();
-                if (targetHealth != null && targetHealth.IsAlive)
+                var entity = target.GetComponent<GameEntity>();
+                if (entity != null && entity.IsAlive)
                 {
                     this.NPC!.PushState(this);
                     return new NPCStateReturnValue(
                             NPCStateReturnValue.ActionType.ChangeState,
-                            new EnemyPursueState(this.NPC, target.transform));
+                            new EnemyPursueState(this.NPC, entity));
                 }
             }
 

@@ -43,23 +43,6 @@ public class BaseNPC : GameEntity
     [Tooltip("The distance at which the NPC will stop moving towards the target")]
     public float stopDistance = 1f;
 
-    [SerializeField]
-    float _health = 100f;
-
-    public float Health 
-    {
-        get => _health;
-        set => _health = value;
-    }
-
-    [SerializeField]
-    float _maxHealth = 100f;
-    public float MaxHealth 
-    {
-        get => _maxHealth;
-        set => _maxHealth = value;
-    }
-
     public Transform target;
 
 #region State Management
@@ -83,8 +66,6 @@ public class BaseNPC : GameEntity
         return null;
     }
     #endregion
-
-    public bool IsAlive { get => Health > 0; }
 
     public event Action<float> OnHealthChanged;
 

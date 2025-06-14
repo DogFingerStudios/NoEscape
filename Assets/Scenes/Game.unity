@@ -28236,6 +28236,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7fe1494ead26de4396127076aaff28f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Health: 100
+  MaxHealth: 100
   _audioSource: {fileID: 0}
   _entityProfile:
     _personality:
@@ -28253,8 +28255,6 @@ MonoBehaviour:
   moveSpeed: 7.5
   DetectionDistance: 5
   stopDistance: 3.5
-  _health: 100
-  _maxHealth: 100
   target: {fileID: 1417590809}
   _mapLabelDialogPrefab: {fileID: 4309021723165264976, guid: 0fbe6e54d5a8f9c4cb034e89f5cf38ab, type: 3}
   _uiCanvas: {fileID: 1711401046}
@@ -28690,7 +28690,8 @@ PrefabInstance:
       propertyPath: m_CollisionDetection
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3793846399804389483, guid: 7b850e83e1ab4e6478f884213701a419, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1614400826536179606, guid: 7b850e83e1ab4e6478f884213701a419, type: 3}
     m_AddedGameObjects: []

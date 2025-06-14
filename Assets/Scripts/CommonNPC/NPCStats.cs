@@ -1,5 +1,5 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 
 public interface IHasHealth 
 {
@@ -15,8 +15,8 @@ public interface IHasHealth
 
 public abstract class GameEntity : MonoBehaviour
 {
-    float Health { get; set; }
-    float MaxHealth { get; set; }
+    [SerializeField] public float Health = 100f;
+    [SerializeField] public float MaxHealth = 100f;
 
     public abstract float TakeDamage(float amount);
     public abstract float Heal(float amount);

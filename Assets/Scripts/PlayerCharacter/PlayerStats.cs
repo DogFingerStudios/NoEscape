@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerStats : MonoBehaviour, IHasHealth
+public class PlayerStats : GameEntity, IHasHealth
 {
     [SerializeField]
     float _health = 100f;
@@ -26,7 +26,7 @@ public class PlayerStats : MonoBehaviour, IHasHealth
 
     public event Action<float> OnHealthChanged;
 
-    public float TakeDamage(float amount)
+    public override float TakeDamage(float amount)
     {
         Health -= amount;
         if (Health < 0) Health = 0;
@@ -34,15 +34,13 @@ public class PlayerStats : MonoBehaviour, IHasHealth
         return Health;
     }
 
-    public float Heal(float amount)
+    public override float Heal(float amount)
     {
         Health += amount;
         if (Health > MaxHealth) Health = MaxHealth;
         this.OnHealthChanged?.Invoke(Health);
         return Health;
     }
-
-    public bool IsAlive { get => Health > 0; }
 
     void Update()
     {

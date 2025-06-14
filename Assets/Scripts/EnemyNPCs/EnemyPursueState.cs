@@ -9,7 +9,7 @@ public class EnemyPursueState : NPCState
     private AudioClip? _warningSound;
     private AudioClip? _willFindYouSound;
 
-    private readonly IHasHealth? _targetHealth;
+    private readonly GameEntity _targetEntity;
     
 
     // TODO: this is a poor man's way to stop chasing, eventually we will want to be a 
@@ -20,10 +20,12 @@ public class EnemyPursueState : NPCState
 
     /// <param name="npc">The NPC to which this state is attached.</param>
     /// <param name="target">The target Transform that the NPC will pursue.</param>
-    public EnemyPursueState(BaseNPC npc, Transform target)
+    public EnemyPursueState(BaseNPC npc, GameEntity target)
         : base(npc)
     {
-        this.NPC!.target = target;
+        // TODO: CHANGE ME!!
+        this.NPC!.target = target.transform;
+
         if (this.NPC is not EnemyNPC)
         {
             throw new System.Exception("BaseNPC is not an EnemyNPC. Cannot enter pursue state.");
@@ -32,7 +34,8 @@ public class EnemyPursueState : NPCState
         _warningSound = Resources.Load<AudioClip>("Sounds/Freeze");
         _willFindYouSound = Resources.Load<AudioClip>("Sounds/IWillFindYou");
 
-        _targetHealth = this.NPC!.target!.GetComponent<IHasHealth>();
+        _targetEntity = this.NPC!.target!.GetComponent<GameEntity>();
+
     }
 
     public override void Enter()
@@ -57,7 +60,7 @@ public class EnemyPursueState : NPCState
     public override NPCStateReturnValue? Update()
     {
         if (_agent == null) return null;
-        if (!_targetHealth!.IsAlive)
+        if (!_targetEntity!.IsAlive)
         {
             // target is dead, go back to idle state
             _agent.isStopped = true;
@@ -76,7 +79,7 @@ public class EnemyPursueState : NPCState
             this.NPC.PushState(this);
             return new NPCStateReturnValue(
                 NPCStateReturnValue.ActionType.ChangeState,
-                new EnemyAttackState(this.NPC));
+                new EnemyAttackState(this.NPC, _targetEntity));
         }
 
         if (distance <= _detectionRange)
