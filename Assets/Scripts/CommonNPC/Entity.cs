@@ -1,18 +1,6 @@
 using System;
 using UnityEngine;
 
-public interface IHasHealth 
-{
-    float Health { get; set; }
-    float MaxHealth { get; set; }
-
-    float TakeDamage(float amount);
-    float Heal(float amount);
-    bool IsAlive { get; }
-
-    event Action<float> OnHealthChanged;
-}
-
 public abstract class GameEntity : MonoBehaviour
 {
     [SerializeField] public float Health = 100f;
@@ -28,5 +16,20 @@ public abstract class GameEntity : MonoBehaviour
         OnHealthChanged?.Invoke(health);
     }
 
+    
 }
+
+// public class ItemEntity : GameEntity
+// {
+//     public override float Heal(float amount)
+//     {
+//     }
+
+//     public override float TakeDamage(float amount)
+//     {
+//         throw new NotImplementedException();
+//     }
+// }
+
+
 

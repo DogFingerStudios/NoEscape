@@ -19,7 +19,7 @@ public class InteractionActionAttribute : Attribute
 
 /// <summary>
 /// This script is attached to an item in the game world to
-/// allow the player to interact with it.
+/// allow entities to interact with it.
 /// </summary>
 public class ItemInteraction : MonoBehaviour, Interactable
 {
@@ -166,18 +166,19 @@ public class ItemInteraction : MonoBehaviour, Interactable
         transform.localRotation = _defaultLocalRotation;
         _swingCoroutine = null;
     }
-
+    
+    // used for collision detection when swinging the item
     private void OnTriggerEnter(Collider other)
     {
         if (_itemData == null) return;
         if ((_itemData.TargetCollisionLayers & (1 << other.gameObject.layer)) == 0) return;
         if (this.gameObject.transform.root == other.gameObject.transform.root) return;
         if (_alreadyHit.Contains(other)) return;
-        
-        var ihashealth = other.GetComponent<IHasHealth>();
-        if (ihashealth != null)
+
+        var entity = other.GetComponent<GameEntity>();
+        if (entity != null)
         {
-            ihashealth.TakeDamage(_itemData.DamageScore);
+            entity.TakeDamage(_itemData.DamageScore);
             _alreadyHit.Add(other);
         }
     }
