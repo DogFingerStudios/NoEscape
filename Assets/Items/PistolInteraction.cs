@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PistolInteraction : ItemInteraction
+public class PistolInteraction : ItemEntity
 {
     private Quaternion _defaultRotation;
     private Coroutine? _attackCoroutine;

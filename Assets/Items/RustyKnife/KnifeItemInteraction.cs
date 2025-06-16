@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class KnifeItemInteraction : ItemInteraction
+public class KnifeItemInteraction : ItemEntity
 {
     private Vector3 _defaultLocalPosition2; 
     private Coroutine? _attackCoroutine;

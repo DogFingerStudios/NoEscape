@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class FlashlightInteraction : ItemInteraction
+public class FlashlightInteraction : ItemEntity
 {
-    [InteractionAction("take_equip")]
+    [ItemAction("take_equip")]
     protected override void onTakeEquip()
     {
         Debug.Log("Flashlight equipped");

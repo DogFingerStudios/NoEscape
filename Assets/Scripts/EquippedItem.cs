@@ -12,7 +12,7 @@ public class EquippedItem : MonoBehaviour
 
     [SerializeField] private Transform? _equippedItemPos;
 
-    private ItemInteraction? _itemInteraction = null;
+    private ItemEntity? _itemInteraction = null;
 
     private GameObject? _equippedItem;
     public GameObject? EquippedItemObject
@@ -29,10 +29,10 @@ public class EquippedItem : MonoBehaviour
             _equippedItem = value;
             _equippedItem.transform.SetParent(_equippedItemPos);
 
-            _itemInteraction = _equippedItem.GetComponent<ItemInteraction>();
+            _itemInteraction = _equippedItem.GetComponent<ItemEntity>();
             if (!_itemInteraction)
             {
-                throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have an ItemInteraction component.");
+                throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have an ItemEntity component.");
             }
 
             var itemData = _itemInteraction!.ItemData;
@@ -153,5 +153,4 @@ public class EquippedItem : MonoBehaviour
             ThrowEquippedItem();
         }
     }
-
 }

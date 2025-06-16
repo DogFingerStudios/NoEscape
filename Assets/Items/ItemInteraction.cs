@@ -7,11 +7,11 @@ using UnityEngine;
 
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-public class InteractionActionAttribute : Attribute
+public class ItemAction : Attribute
 {
     public string ActionName { get; }
 
-    public InteractionActionAttribute(string actionName)
+    public ItemAction(string actionName)
     {
         ActionName = actionName;
     }
@@ -21,7 +21,7 @@ public class InteractionActionAttribute : Attribute
 /// This script is attached to an item in the game world to
 /// allow entities to interact with it.
 /// </summary>
-public class ItemInteraction : MonoBehaviour, Interactable
+public class ItemEntity : GameEntity, Interactable
 {
     [SerializeField] private ItemData? _itemData;
     public ItemData? ItemData { get => _itemData; }
@@ -44,7 +44,7 @@ public class ItemInteraction : MonoBehaviour, Interactable
             MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             foreach (MethodInfo method in methods)
             {
-                InteractionActionAttribute attr = method.GetCustomAttribute<InteractionActionAttribute>();
+                ItemAction attr = method.GetCustomAttribute<ItemAction>();
                 if (attr != null && attr.ActionName == actionName)
                 {
                     method.Invoke(this, null);
@@ -58,7 +58,7 @@ public class ItemInteraction : MonoBehaviour, Interactable
         Debug.LogWarning($"No action found for '{actionName}' in {this.GetType().Name}");
     }
 
-    [InteractionAction("take_equip")]
+    [ItemAction("take_equip")]
     protected virtual void onTakeEquip()
     {
         _equippedItemScript?.EquipItem(this.gameObject);
@@ -96,8 +96,20 @@ public class ItemInteraction : MonoBehaviour, Interactable
         _hitCollider = GetComponent<Collider>();
         if (_hitCollider == null)
         {
-            throw new Exception("Collider not found on ItemInteraction. Make sure the item has a Collider component.");
+            throw new Exception("Collider not found on ItemEntity. Make sure the item has a Collider component.");
         }
+    }
+
+    public override float Heal(float amount)
+    {
+        // Items typically don't heal, so we can just return 0
+        return 0f;
+    }
+
+    public override float TakeDamage(float damage)
+    {
+        // Items typically don't take damage, so we can just return 0
+        return 0f;
     }
 
     /// <summary>

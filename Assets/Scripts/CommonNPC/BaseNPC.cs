@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseNPC : GameEntity
+public class BaseNPC : GameEntity, Interactable
 {
     [SerializeField]
     [Tooltip("The AudioSource component for playing NPC sounds")]
@@ -45,6 +45,16 @@ public class BaseNPC : GameEntity
 
     public Transform target;
 
+
+#region Interactable Interface Implementation
+
+    public virtual string HelpText => $"{this.name}";
+    public virtual void OnFocus() { }
+    public virtual void OnDefocus() { }
+    public virtual void Interact() { }
+
+#endregion
+
     public event Action<float> OnHealthChanged;
     private void onHealthChanged(float health)
     {
@@ -77,7 +87,7 @@ public class BaseNPC : GameEntity
 
         return null;
     }
-    #endregion
+#endregion
 
     public override float TakeDamage(float damage)
     {
@@ -98,7 +108,6 @@ public class BaseNPC : GameEntity
 
     private void onDeath()
     {
-        Debug.Log($"{this.name} has died.");
         this.setState(new NPCDeathState(this));
     }
 
