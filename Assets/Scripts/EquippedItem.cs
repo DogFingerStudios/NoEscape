@@ -8,8 +8,6 @@ using UnityEngine;
 /// </summary>
 public class EquippedItem : MonoBehaviour
 {
-    private PlayerInteractor? _interactor;
-
     [SerializeField] private Transform? _equippedItemPos;
 
     private ItemEntity? _itemInteraction = null;
@@ -17,12 +15,11 @@ public class EquippedItem : MonoBehaviour
     private GameObject? _equippedItem;
     public GameObject? EquippedItemObject { get => _equippedItem; }
 
-    public void SetEquippedItem(GameObject item)
+    public ItemEntity SetEquippedItem(GameObject item)
     {
         if (item == null)
         {
-            Debug.LogError("EquippedItem: Attempted to equip a null item.");
-            return;
+            throw new System.ArgumentNullException(nameof(item), "EquippedItem: Cannot set equipped item to null.");
         }
 
         if (_equippedItem != null)
@@ -58,6 +55,7 @@ public class EquippedItem : MonoBehaviour
         }
 
         _itemInteraction!.onEquipped();
+        return _itemInteraction;
     }
 
     public void DropEquippedItem()
@@ -76,7 +74,7 @@ public class EquippedItem : MonoBehaviour
         }
     }
 
-    private void ThrowEquippedItem()
+    public void ThrowEquippedItem()
     {
         if (_equippedItem != null)
         {
@@ -103,41 +101,6 @@ public class EquippedItem : MonoBehaviour
         if (_itemInteraction != null)
         {
             _itemInteraction = null; // Make sure we can't send the Attack command after dropping an item
-        }
-    }
-
-    void Awake()
-    {
-        _interactor = GetComponentInChildren<PlayerInteractor>();
-        if (_interactor == null)
-        {
-            Debug.LogError("EquippedItem script requires a PlayerInteractor component on the same GameObject.");
-        }
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (_interactor!.FocusedObject != null)
-            {
-                this.SetEquippedItem(_interactor.FocusedObject);
-            }
-            else if (_equippedItem != null)
-            {
-                DropEquippedItem();
-            }
-        }
-        else if (Input.GetMouseButtonDown(0))
-        {
-            if (_itemInteraction != null)
-            {
-                _itemInteraction.Attack();
-            }
-        }
-        else if (Input.GetMouseButtonDown(1))
-        {
-            ThrowEquippedItem();
         }
     }
 }

@@ -4,22 +4,39 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// this script is attached to the Main Camera which is a child of the Player object
+/// <summary>
+/// This script is attached to the Main Camera which is a child of the Player object.
+/// 
+/// When a player looks at an interactable object, aka and Item, within a certain 
+/// range, this script is responsible for detecting if the player is looking at an 
+/// interactable object, displaying the help text, and invoking the Item's
+/// interaction menu.
+/// </summary>
 public class PlayerInteractor : MonoBehaviour
 {
+
+#region Interaction Interface Settings
     public float interactRange = 3f;
     public Image? crosshairImage;
     public Color defaultColor = Color.white;
     public Color highlightColor = Color.green;
-    public TextMeshProUGUI? helpTextUI; 
-    public GameObject? FocusedObject = null;    
+    public TextMeshProUGUI? helpTextUI;
+#endregion
 
+    public GameObject? FocusedObject = null;    
     private Interactable? _currentFocus;
 
+    private EquippedItem? _equippedItemScript;
+    private ItemEntity? _itemInteraction = null;
 
     private void Start()
     {
         helpTextUI?.gameObject.SetActive(false);
+        _equippedItemScript = this.GetComponentInParent<EquippedItem>();
+        if (_equippedItemScript == null)
+        {
+            throw new System.Exception("PlayerInteractor: EquippedItem script not found on Player object.");
+        }
     }
 
     private void checkInteractions()
@@ -55,6 +72,7 @@ public class PlayerInteractor : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     _currentFocus!.Interact();
+
                 }
             }
             else
@@ -66,11 +84,6 @@ public class PlayerInteractor : MonoBehaviour
         {
             ClearFocus();
         }
-    }
-
-    void Update()
-    {
-        checkInteractions();
     }
 
     void ClearFocus()
@@ -91,6 +104,37 @@ public class PlayerInteractor : MonoBehaviour
         {
             crosshairImage.color = defaultColor;
         }
+        
         FocusedObject = null;
+    }
+
+    void Update()
+    {
+        checkInteractions();
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (FocusedObject != null)
+            {
+                _itemInteraction = _equippedItemScript.SetEquippedItem(FocusedObject);
+            }
+            else if (_equippedItemScript.EquippedItemObject != null)
+            {
+                _equippedItemScript.DropEquippedItem();
+                _itemInteraction = null;
+            }
+        }
+        else if (Input.GetMouseButtonDown(0))
+        {
+            if (_itemInteraction != null)
+            {
+                _itemInteraction.Attack();
+            }
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            _equippedItemScript.ThrowEquippedItem();
+            _itemInteraction = null; 
+        }
     }
 }

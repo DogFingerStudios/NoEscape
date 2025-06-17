@@ -30,17 +30,10 @@ public class ItemEntity : GameEntity, Interactable
     public GameEntity? OwnerEntity
     {
         get => _ownerEntity;
-        set
-        {
-            _ownerEntity = value;
-            // if (_ownerEntity != null)
-            // {
-            //     _ownerEntity.OnDefocus += this.OnDefocus;
-            //     _ownerEntity.OnFocus += this.OnFocus;
-            // }
-        }
+        set => _ownerEntity = value;
     }
     
+    private GameEntity? _interactorEntity;
     private EquippedItem? _equippedItemScript;
 
     public string HelpText => $"Press [E] to interact with '{_itemData?.ItemName}'";
@@ -84,12 +77,12 @@ public class ItemEntity : GameEntity, Interactable
         if (_hitCollider) _hitCollider.enabled = true;
     }
 
-    public void OnDefocus()
+    public void OnFocus()
     {
         // nothing to do
     }
 
-    public void OnFocus()
+    public void OnDefocus()
     {
         // nothing to do
     }

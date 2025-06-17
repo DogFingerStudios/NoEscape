@@ -6,6 +6,14 @@
 - **Input:** Hover over item in inventory
 - **Expected Result:** Hover test displays (e.g., "Press 'E' to interact")
 
+### Test Case 0.2: Pick Up Item (Menu)
+- **Input:** Press 'E' while hovering over item, select "Hold" from menu
+- **Expected Result:** Item is equipped in the player's hand, if the player was already holding an item then it is dropped, pressing the primary mouse button will invoked the item's "Attack"
+
+### Test Case 0.3: Pick Up Item (Quick Action)
+- **Input:** Press 'Q' while hovering over item
+- **Expected Result:** Item is equipped in the player's hand, if the player was already holding an item then it is dropped, pressing the primary mouse button will invoked the item's "Attack"
+
 ---
 
 ## Feature 1: Friendly NPC Interactions
