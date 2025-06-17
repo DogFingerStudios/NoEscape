@@ -15,44 +15,49 @@ public class EquippedItem : MonoBehaviour
     private ItemEntity? _itemInteraction = null;
 
     private GameObject? _equippedItem;
-    public GameObject? EquippedItemObject
+    public GameObject? EquippedItemObject { get => _equippedItem; }
+
+    public void SetEquippedItem(GameObject item)
     {
-        get => _equippedItem;
-        set
+        if (item == null)
         {
-            if (!value)
-            {
-                DropEquippedItem();
-                return;
-            }
-
-            _equippedItem = value;
-            _equippedItem.transform.SetParent(_equippedItemPos);
-
-            _itemInteraction = _equippedItem.GetComponent<ItemEntity>();
-            if (!_itemInteraction)
-            {
-                throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have an ItemEntity component.");
-            }
-
-            var itemData = _itemInteraction!.ItemData;
-            if (itemData == null)
-            {
-                throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have ItemData.");
-            }
-
-            // Once parented to the item position, set the local position and rotation to zero,
-            // so it matches the item pos transform.
-            _equippedItem.transform.localPosition = itemData.EquippedPosition;
-            _equippedItem.transform.localRotation = Quaternion.Euler(itemData.EquippedRotation);
-
-            // Do we want to disable physics while we equip the item?
-            // If item doesn't have physics, we don't need to do anything
-            if (_equippedItem.TryGetComponent<Rigidbody>(out var rb))
-            {
-                rb.isKinematic = true;
-            }
+            Debug.LogError("EquippedItem: Attempted to equip a null item.");
+            return;
         }
+
+        if (_equippedItem != null)
+        {
+            DropEquippedItem();
+        }
+
+        _equippedItem = item;
+        _equippedItem.transform.SetParent(_equippedItemPos);
+
+        _itemInteraction = _equippedItem.GetComponent<ItemEntity>();
+        if (!_itemInteraction)
+        {
+            throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have an ItemEntity component.");
+        }
+
+        var itemData = _itemInteraction!.ItemData;
+        if (itemData == null)
+        {
+            throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have ItemData.");
+        }
+
+        // Once parented to the item position, set the local position and rotation to zero,
+        // so it matches the item pos transform.
+        _equippedItem.transform.localPosition = itemData.EquippedPosition;
+        _equippedItem.transform.localRotation = Quaternion.Euler(itemData.EquippedRotation);
+
+        // Do we want to disable physics while we equip the item?
+        // If item doesn't have physics, we don't need to do anything
+        if (_equippedItem.TryGetComponent<Rigidbody>(out var rb))
+        {
+            rb.isKinematic = true;
+        }
+
+        _itemInteraction!.onEquipped();
     }
 
     public void DropEquippedItem()
@@ -101,24 +106,6 @@ public class EquippedItem : MonoBehaviour
         }
     }
 
-    public void EquipItem(GameObject item)
-    {
-        if (item == null)
-        {
-            Debug.LogError("EquippedItem: Attempted to equip a null item.");
-            return;
-        }
-
-        if (_equippedItem != null)
-        {
-            DropEquippedItem();
-        }
-
-        EquippedItemObject = item;
-        _itemInteraction!.onEquipped();
-    }
-
-
     void Awake()
     {
         _interactor = GetComponentInChildren<PlayerInteractor>();
@@ -134,7 +121,7 @@ public class EquippedItem : MonoBehaviour
         {
             if (_interactor!.FocusedObject != null)
             {
-                this.EquipItem(_interactor.FocusedObject);
+                this.SetEquippedItem(_interactor.FocusedObject);
             }
             else if (_equippedItem != null)
             {

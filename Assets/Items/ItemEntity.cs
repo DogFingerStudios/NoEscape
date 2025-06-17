@@ -26,6 +26,21 @@ public class ItemEntity : GameEntity, Interactable
     [SerializeField] private ItemData? _itemData;
     public ItemData? ItemData { get => _itemData; }
     
+    private GameEntity? _ownerEntity;
+    public GameEntity? OwnerEntity
+    {
+        get => _ownerEntity;
+        set
+        {
+            _ownerEntity = value;
+            // if (_ownerEntity != null)
+            // {
+            //     _ownerEntity.OnDefocus += this.OnDefocus;
+            //     _ownerEntity.OnFocus += this.OnFocus;
+            // }
+        }
+    }
+    
     private EquippedItem? _equippedItemScript;
 
     public string HelpText => $"Press [E] to interact with '{_itemData?.ItemName}'";
@@ -61,7 +76,7 @@ public class ItemEntity : GameEntity, Interactable
     [ItemAction("take_equip")]
     protected virtual void onTakeEquip()
     {
-        _equippedItemScript?.EquipItem(this.gameObject);
+        _equippedItemScript?.SetEquippedItem(this.gameObject);
     }
 
     public virtual void onUnequipped()
