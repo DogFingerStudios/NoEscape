@@ -51,7 +51,7 @@ public class BaseNPC : GameEntity, Interactable
     public virtual string HelpText => $"{this.name}";
     public virtual void OnFocus() { }
     public virtual void OnDefocus() { }
-    public virtual void Interact() { }
+    public virtual void Interact(GameEntity? interactor = null) { }
 
 #endregion
 

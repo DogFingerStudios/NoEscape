@@ -34,14 +34,22 @@ public class ItemEntity : GameEntity, Interactable
     }
     
     private GameEntity? _interactorEntity;
-    private EquippedItem? _equippedItemScript;
+    private EquippedItemController? _equippedItemScript;
 
     public string HelpText => $"Press [E] to interact with '{_itemData?.ItemName}'";
 
-    public void Interact()
+    public void Interact(GameEntity? interactor = null)
     {
         InteractionManager.Instance.OnInteractionAction += this.DoInteraction;
+        InteractionManager.Instance.OnMenuClosed += () =>
+        {
+            InteractionManager.Instance.OnInteractionAction -= this.DoInteraction;
+            InteractionManager.Instance.OnMenuClosed -= () => { };
+            _interactorEntity = null;
+        };
         InteractionManager.Instance.OpenMenu(_itemData?.Interactions);
+
+        _interactorEntity = interactor;
     }
 
     private void DoInteraction(string actionName)
@@ -70,11 +78,14 @@ public class ItemEntity : GameEntity, Interactable
     protected virtual void onTakeEquip()
     {
         _equippedItemScript?.SetEquippedItem(this.gameObject);
+        _ownerEntity = _interactorEntity;
     }
 
     public virtual void onUnequipped()
     {
         if (_hitCollider) _hitCollider.enabled = true;
+        _ownerEntity = null;
+        _interactorEntity = null;
     }
 
     public void OnFocus()
@@ -95,7 +106,7 @@ public class ItemEntity : GameEntity, Interactable
             throw new Exception("Player GameObject not found. Make sure the Player has the 'Player' tag.");
         }
 
-        _equippedItemScript = player.GetComponent<EquippedItem>();
+        _equippedItemScript = player.GetComponent<EquippedItemController>();
         if (_equippedItemScript == null)
         {
             throw new Exception("EquippedItem script not found on Player. Make sure the Player has the EquippedItem component.");

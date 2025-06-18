@@ -6,5 +6,5 @@ public interface Interactable
     void OnFocus();
     void OnDefocus();
 
-    void Interact();
+    void Interact(GameEntity? interactor = null);
 }

@@ -35,6 +35,7 @@ public class InteractionManager : MonoBehaviour
     // define a callback that callers can use to execute the action
     public event Action<string> OnInteractionAction;
     public event Action OnLateInteractionAction;
+    public event Action OnMenuClosed;
 
     private static InteractionManager _instance;
     public static InteractionManager Instance
@@ -101,6 +102,8 @@ public class InteractionManager : MonoBehaviour
         crossHair.SetActive(true);
         _buttonPanel.SetActive(false);
 
+        OnMenuClosed?.Invoke();
+        OnMenuClosed = null;
         OnInteractionAction = null;
     }
 

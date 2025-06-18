@@ -28,7 +28,7 @@ public class LampInteractable : MonoBehaviour, Interactable
         Light.enabled = false;
     }
 
-    public void Interact()
+    public void Interact(GameEntity? interactor = null)
     {
         if (Light == null)
         {

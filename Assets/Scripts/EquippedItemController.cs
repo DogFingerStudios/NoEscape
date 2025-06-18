@@ -6,11 +6,11 @@ using UnityEngine;
 /// This script is attached to the root `Player` object and handles the mechanics
 /// of the equipped item (e.g. dropping, storing, weilding, etc.)
 /// </summary>
-public class EquippedItem : MonoBehaviour
+public class EquippedItemController : MonoBehaviour
 {
     [SerializeField] private Transform? _equippedItemPos;
 
-    private ItemEntity? _itemInteraction = null;
+    private ItemEntity? _itemEntity = null;
 
     private GameObject? _equippedItem;
     public GameObject? EquippedItemObject { get => _equippedItem; }
@@ -30,13 +30,13 @@ public class EquippedItem : MonoBehaviour
         _equippedItem = item;
         _equippedItem.transform.SetParent(_equippedItemPos);
 
-        _itemInteraction = _equippedItem.GetComponent<ItemEntity>();
-        if (!_itemInteraction)
+        _itemEntity = _equippedItem.GetComponent<ItemEntity>();
+        if (!_itemEntity)
         {
             throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have an ItemEntity component.");
         }
 
-        var itemData = _itemInteraction!.ItemData;
+        var itemData = _itemEntity!.ItemData;
         if (itemData == null)
         {
             throw new System.Exception($"EquippedItem: Item '{_equippedItem.name}' does not have ItemData.");
@@ -54,15 +54,15 @@ public class EquippedItem : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        _itemInteraction!.onEquipped();
-        return _itemInteraction;
+        _itemEntity!.onEquipped();
+        return _itemEntity;
     }
 
     public void DropEquippedItem()
     {
         if (_equippedItem != null)
         {
-            _itemInteraction!.onUnequipped();
+            _itemEntity!.onUnequipped();
             if (_equippedItem.TryGetComponent<Rigidbody>(out var rb))
             {
                 rb.angularVelocity = Vector3.zero;
@@ -78,7 +78,7 @@ public class EquippedItem : MonoBehaviour
     {
         if (_equippedItem != null)
         {
-            _itemInteraction!.onUnequipped();
+            _itemEntity!.onUnequipped();
             if (_equippedItem.TryGetComponent<Rigidbody>(out var rb))
             {
                 float _throwForce = 10f;
@@ -98,9 +98,9 @@ public class EquippedItem : MonoBehaviour
             _equippedItem = null;
         }
 
-        if (_itemInteraction != null)
+        if (_itemEntity != null)
         {
-            _itemInteraction = null; // Make sure we can't send the Attack command after dropping an item
+            _itemEntity = null; // Make sure we can't send the Attack command after dropping an item
         }
     }
 }

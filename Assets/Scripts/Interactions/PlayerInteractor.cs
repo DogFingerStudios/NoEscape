@@ -26,14 +26,14 @@ public class PlayerInteractor : MonoBehaviour
     public GameObject? FocusedObject = null;    
     private Interactable? _currentFocus;
 
-    private EquippedItem? _equippedItemScript;
-    private ItemEntity? _itemInteraction = null;
+    private EquippedItemController? _equippedItemCtrl;
+    private ItemEntity? _itemEntity = null;
 
     private void Start()
     {
         helpTextUI?.gameObject.SetActive(false);
-        _equippedItemScript = this.GetComponentInParent<EquippedItem>();
-        if (_equippedItemScript == null)
+        _equippedItemCtrl = this.GetComponentInParent<EquippedItemController>();
+        if (_equippedItemCtrl == null)
         {
             throw new System.Exception("PlayerInteractor: EquippedItem script not found on Player object.");
         }
@@ -104,7 +104,6 @@ public class PlayerInteractor : MonoBehaviour
         {
             crosshairImage.color = defaultColor;
         }
-        
         FocusedObject = null;
     }
 
@@ -116,25 +115,25 @@ public class PlayerInteractor : MonoBehaviour
         {
             if (FocusedObject != null)
             {
-                _itemInteraction = _equippedItemScript.SetEquippedItem(FocusedObject);
+                _itemEntity = _equippedItemCtrl.SetEquippedItem(FocusedObject);
             }
-            else if (_equippedItemScript.EquippedItemObject != null)
+            else if (_equippedItemCtrl.EquippedItemObject != null)
             {
-                _equippedItemScript.DropEquippedItem();
-                _itemInteraction = null;
+                _equippedItemCtrl.DropEquippedItem();
+                _itemEntity = null;
             }
         }
         else if (Input.GetMouseButtonDown(0))
         {
-            if (_itemInteraction != null)
+            if (_itemEntity != null)
             {
-                _itemInteraction.Attack();
+                _itemEntity.Attack();
             }
         }
         else if (Input.GetMouseButtonDown(1))
         {
-            _equippedItemScript.ThrowEquippedItem();
-            _itemInteraction = null; 
+            _equippedItemCtrl.ThrowEquippedItem();
+            _itemEntity = null; 
         }
     }
 }

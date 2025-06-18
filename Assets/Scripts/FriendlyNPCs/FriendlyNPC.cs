@@ -44,7 +44,7 @@ public abstract class FriendlyNPC : BaseNPC
     public override void OnFocus() { }
     public override void OnDefocus() { }
 
-    public override void Interact()
+    public override void Interact(GameEntity? interactor = null)
     {
         if (!this.IsAlive) return;
         InteractionManager.Instance.OnInteractionAction += this.DoInteraction;
