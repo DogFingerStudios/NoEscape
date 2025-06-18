@@ -18,10 +18,12 @@ MonoBehaviour:
   TargetCollisionLayers:
     serializedVersion: 2
     m_Bits: 448
+  EquippedPosition: {x: 0, y: 0, z: 0}
+  EquippedRotation: {x: 0, y: 0, z: 0}
   Interactions:
   - key: take_equip
-    description: Take (Equip)
+    description: Hold
   - key: take_store
-    description: Take (Store)
+    description: Stow
   - key: do_the_nasty
     description: DoTheNasty

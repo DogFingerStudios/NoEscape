@@ -14,19 +14,19 @@ public class HealthBar : MonoBehaviour
 
     private void Awake()
     {
-        if (!_targetObject.TryGetComponent<IHasHealth>(out var iHasHealth))
+        if (!_targetObject.TryGetComponent<GameEntity>(out var entity))
         {
-            throw new System.Exception("Target object does not implement IHasHealth interface.");
+            throw new System.Exception("Target object does not implement GameEntity interface.");
         }
 
-        _maxHealth = iHasHealth.MaxHealth;
-        iHasHealth.OnHealthChanged += UpdateBar;
+        _maxHealth = entity.MaxHealth;
+        entity.OnHealthChanged += UpdateBar;
 
         _healthSlider.minValue = 0f;
         _healthSlider.maxValue = _maxHealth;
         _healthSlider.value = _maxHealth;
 
-        UpdateBar(iHasHealth.Health);
+        UpdateBar(entity.Health);
     }
 
     private void UpdateBar(float health)

@@ -126,7 +126,6 @@ public class MapLabeler : MonoBehaviour
         marker.transform.localScale = new Vector3(2f, 1.5f, 2f);
 
         _playerStats.LabeledPoints[labelName] = _savedPosition;
-        Debug.Log($"Label '{labelName}' saved at position {_savedPosition}");        
     }
 
     private void CancelButtonClicked()

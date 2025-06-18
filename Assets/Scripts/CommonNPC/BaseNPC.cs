@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseNPC : MonoBehaviour, IHasHealth
+public class BaseNPC : GameEntity, Interactable
 {
     [SerializeField]
     [Tooltip("The AudioSource component for playing NPC sounds")]
@@ -43,24 +43,29 @@ public class BaseNPC : MonoBehaviour, IHasHealth
     [Tooltip("The distance at which the NPC will stop moving towards the target")]
     public float stopDistance = 1f;
 
-    [SerializeField]
-    float _health = 100f;
-
-    public float Health 
-    {
-        get => _health;
-        set => _health = value;
-    }
-
-    [SerializeField]
-    float _maxHealth = 100f;
-    public float MaxHealth 
-    {
-        get => _maxHealth;
-        set => _maxHealth = value;
-    }
-
     public Transform target;
+
+
+#region Interactable Interface Implementation
+
+    public virtual string HelpText => $"{this.name}";
+    public virtual void OnFocus() { }
+    public virtual void OnDefocus() { }
+    public virtual void Interact(GameEntity? interactor = null) { }
+
+#endregion
+
+    public event Action<float> OnHealthChanged;
+    private void onHealthChanged(float health)
+    {
+        base.onHealthChanged(health);
+    }
+
+    public BaseNPC()
+    {
+        OnHealthChanged += onHealthChanged;
+    }
+
 
 #region State Management
     public void setState(NPCState state)
@@ -82,43 +87,28 @@ public class BaseNPC : MonoBehaviour, IHasHealth
 
         return null;
     }
-    #endregion
+#endregion
 
-    public bool IsAlive { get => Health > 0; }
-
-    public event Action<float> OnHealthChanged;
-
-    public float TakeDamage(float damage)
+    public override float TakeDamage(float damage)
     {
         Health -= damage;
         if (Health < 0) Health = 0;
         this.OnHealthChanged?.Invoke(Health);
-        if (Health <= 0)
-        {
-            onDeath();
-            bool foo = this.IsAlive;
-            Debug.Log($"{this.name} is dead: {foo}");
-        }
-        // else
-        // {
-        //     // Play hurt animation or sound
-        //     _animator.SetTrigger("Hurt");
-        // }
+        if (Health <= 0) onDeath();
         return Health;
     }
 
-    private void onDeath()
-    {
-        Debug.Log($"{this.name} has died.");
-        this.setState(new NPCDeathState(this));
-    }
-
-    float IHasHealth.Heal(float amount)
+    public override float Heal(float amount)
     {
         Health += amount;
         if (Health > MaxHealth) Health = MaxHealth;
         this.OnHealthChanged?.Invoke(Health);
         return Health;
+    }
+
+    private void onDeath()
+    {
+        this.setState(new NPCDeathState(this));
     }
 
     protected NPCStateMachine stateMachine = new NPCStateMachine();

@@ -5,5 +5,6 @@ public interface Interactable
     string HelpText { get; }
     void OnFocus();
     void OnDefocus();
-    void Interact();
+
+    void Interact(GameEntity? interactor = null);
 }

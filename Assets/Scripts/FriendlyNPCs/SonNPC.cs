@@ -17,7 +17,6 @@ public class SonNPC : FriendlyNPC
         });
 
         stateMachine.SetState(new NPCIdleState(this));
-        NPCShooter.OnGunFired += onGunFired;
     }
 
     private void onGunFired()

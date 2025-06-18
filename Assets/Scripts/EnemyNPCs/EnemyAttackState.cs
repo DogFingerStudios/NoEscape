@@ -21,9 +21,9 @@ public class EnemyAttackState : NPCState
 
     private float nextFireTime = 0f;
     private LineRenderer _lineRenderer;
-    private readonly IHasHealth? _targetHealth;
+    private readonly GameEntity _targetEntity;
 
-    public EnemyAttackState(BaseNPC npc)
+    public EnemyAttackState(BaseNPC npc, GameEntity target)
         : base(npc)
     {
         if (this.NPC!.target == null)
@@ -62,7 +62,7 @@ public class EnemyAttackState : NPCState
             Resources.Load<AudioClip>("Sounds/gunshot2")
         };
 
-        _targetHealth = this.NPC!.target!.GetComponent<IHasHealth>();
+        _targetEntity = target;
     }
 
     public override void Enter()
@@ -77,7 +77,7 @@ public class EnemyAttackState : NPCState
 
     public override NPCStateReturnValue? Update()
     {
-        if (_targetHealth!.IsAlive == false)
+        if (_targetEntity!.IsAlive == false)
         {
             // target is dead, go back to idle state
             return new NPCStateReturnValue(NPCStateReturnValue.ActionType.PopState);
@@ -125,10 +125,8 @@ public class EnemyAttackState : NPCState
             float distance = Vector3.Distance(_firePoint.position, hit.point);
             int damage = Mathf.RoundToInt(defaultDamage * (1 - (distance / range)));
 
-            if (hit.collider.GetComponent<IHasHealth>() != null)
-            {
-                hit.collider.GetComponent<IHasHealth>().TakeDamage(damage);
-            }
+            var targetEntity = hit.collider.GetComponent<GameEntity>();
+            targetEntity?.TakeDamage(damage);
         }
         else
         {
