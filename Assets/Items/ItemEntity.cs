@@ -34,7 +34,7 @@ public class ItemEntity : GameEntity, Interactable
     }
     
     private GameEntity? _interactorEntity;
-    private EquippedItemController? _equippedItemScript;
+    private EquippedItemController? _equippedItemCtrl;
 
     public string HelpText => $"Press [E] to interact with '{_itemData?.ItemName}'";
 
@@ -77,8 +77,10 @@ public class ItemEntity : GameEntity, Interactable
     [ItemAction("take_equip")]
     protected virtual void onTakeEquip()
     {
-        _equippedItemScript?.SetEquippedItem(this.gameObject);
         _ownerEntity = _interactorEntity;
+        // _ownerEntity.SetEquippedItem(this.gameObject);
+
+        _equippedItemCtrl?.SetEquippedItem(this.gameObject);
     }
 
     public virtual void onUnequipped()
@@ -106,8 +108,8 @@ public class ItemEntity : GameEntity, Interactable
             throw new Exception("Player GameObject not found. Make sure the Player has the 'Player' tag.");
         }
 
-        _equippedItemScript = player.GetComponent<EquippedItemController>();
-        if (_equippedItemScript == null)
+        _equippedItemCtrl = player.GetComponent<EquippedItemController>();
+        if (_equippedItemCtrl == null)
         {
             throw new Exception("EquippedItem script not found on Player. Make sure the Player has the EquippedItem component.");
         }
