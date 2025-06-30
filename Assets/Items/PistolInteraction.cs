@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PistolInteraction : ItemInteraction
+public class PistolInteraction : ItemEntity
 {
     private Quaternion _defaultRotation;
     private Coroutine? _attackCoroutine;
@@ -129,9 +129,10 @@ public class PistolInteraction : ItemInteraction
         
         if (Physics.Raycast(_firePoint!.position, direction, out RaycastHit hit, _pistolItemData!.FireRange))
         {
-            if (hit.collider.GetComponent<IHasHealth>() != null)
+            var entity = hit.collider.GetComponent<GameEntity>();
+            if (entity != null)
             {
-                hit.collider.GetComponent<IHasHealth>().TakeDamage(_pistolItemData!.DamageScore);
+                entity.TakeDamage(_pistolItemData!.DamageScore);
             }
 
             StartCoroutine(FireRayEffect(hit.point));

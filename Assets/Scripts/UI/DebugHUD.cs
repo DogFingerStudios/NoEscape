@@ -14,7 +14,7 @@ public class DebugHUD : MonoBehaviour
     // Objects of interest
     public CharacterController controller;
     public GameObject enemyNPC;
-    private IHasHealth enemyNPCHealth;
+    private GameEntity enemyNPCHealth;
     public SonNPC sonNPC;
 
     private bool isVisible = true;
@@ -23,7 +23,7 @@ public class DebugHUD : MonoBehaviour
     {
         if (enemyNPC)
         {
-            enemyNPCHealth = enemyNPC.GetComponent<IHasHealth>();
+            enemyNPCHealth = enemyNPC.GetComponent<GameEntity>();
         }
     }
 

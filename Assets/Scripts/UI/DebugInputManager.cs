@@ -4,24 +4,23 @@ using UnityEngine.SceneManagement;
 public class DebugInputManager : MonoBehaviour
 {
     [SerializeField] private GameObject _playerObject;
-    private IHasHealth iHasHealth;
-
+    private GameEntity playerEntity;
     
     void Awake()
     {
-        iHasHealth = _playerObject.GetComponent<IHasHealth>();
+        playerEntity = _playerObject.GetComponent<GameEntity>();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.RightBracket))
         {
-            iHasHealth.Heal(5f);
+            playerEntity.Heal(5f);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftBracket))
         {
-            iHasHealth.TakeDamage(5f);
+            playerEntity.TakeDamage(5f);
         }
         
         if (Input.GetKeyDown(KeyCode.F12))

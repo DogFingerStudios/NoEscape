@@ -5,13 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public abstract class FriendlyNPC : BaseNPC, Interactable
+public abstract class FriendlyNPC : BaseNPC
 {
     // TODO: these three fields should be refactored out of here
     [SerializeField] private GameObject _mapLabelDialogPrefab;
     [SerializeField] private Canvas _uiCanvas;
     private PlayerStats _playerStats;
-
 
     public List<InteractionData> Interactions = new List<InteractionData>();
 
@@ -31,9 +30,9 @@ public abstract class FriendlyNPC : BaseNPC, Interactable
         Interactions.Add(new InteractionData { key = "goto", description = "Go To", IsAvailable = () => _playerStats.LabeledPoints.Count > 0 });
     }
 
-    #region Interactable Interface Implementation
+#region Interactable Interface Implementation
 
-    public string HelpText 
+    public override string HelpText 
     {
         get
         {
@@ -42,23 +41,16 @@ public abstract class FriendlyNPC : BaseNPC, Interactable
         }
     }
 
-    public void OnFocus()
-    {
-        // Optional: highlight outline, play sound, etc.
-    }
+    public override void OnFocus() { }
+    public override void OnDefocus() { }
 
-    public void OnDefocus()
-    {
-        // Cleanup when not hovered
-    }
-
-    public void Interact()
+    public override void Interact(GameEntity? interactor = null)
     {
         if (!this.IsAlive) return;
         InteractionManager.Instance.OnInteractionAction += this.DoInteraction;
         InteractionManager.Instance.OpenMenu(Interactions);
     }
-    #endregion
+#endregion
 
     // TODO: this is copied from ItemInteraction.cs, should be refactored to a common base class
     private void DoInteraction(string actionName)
@@ -69,7 +61,7 @@ public abstract class FriendlyNPC : BaseNPC, Interactable
             MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             foreach (MethodInfo method in methods)
             {
-                InteractionActionAttribute attr = method.GetCustomAttribute<InteractionActionAttribute>();
+                ItemAction attr = method.GetCustomAttribute<ItemAction>();
                 if (attr != null && attr.ActionName == actionName)
                 {
                     method.Invoke(this, null);
@@ -83,13 +75,13 @@ public abstract class FriendlyNPC : BaseNPC, Interactable
         Debug.LogWarning($"No action found for '{actionName}' in {this.GetType().Name}");
     }
 
-    [InteractionAction("stay")]
+    [ItemAction("stay")]
     protected virtual void onStay()
     {
         this.setState(new NPCIdleState(this));
     }
 
-    [InteractionAction("follow")]
+    [ItemAction("follow")]
     protected virtual void onFollow()
     {
         this.Panic();
@@ -106,7 +98,7 @@ public abstract class FriendlyNPC : BaseNPC, Interactable
         }
     }
 
-    [InteractionAction("goto")]
+    [ItemAction("goto")]
     protected virtual void onGoTo()
     {
         InteractionManager.Instance.OnLateInteractionAction += ResetCursor;

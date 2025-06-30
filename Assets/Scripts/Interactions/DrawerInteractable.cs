@@ -7,7 +7,7 @@ public class DrawerInteractable : MonoBehaviour, Interactable
         get { return "Press [E] to open/close drawer"; }
     }
 
-    public void Interact()
+    public void Interact(GameEntity? interactor = null)
     {
         // print the name of the object being interacted with
         // Debug.Log("Drawer " + gameObject.name + " opened!");
